@@ -1,7 +1,7 @@
  Overview
 ----------
- PyAcies is framework to build MMORPG. It's written using event-driven approach, to avoid c10k problem. 
- It uses circuits framework as backend, and will use html5 + websockets to communication with it.
+ PyAcies is game framework to build MMORPG. It's written using event-driven approach to avoid c10k problem. 
+ It uses circuits framework as a backend, and will use html5 + websockets for communication.
 
  Usage
 ----------
