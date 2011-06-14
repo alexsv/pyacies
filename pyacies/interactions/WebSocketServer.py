@@ -15,7 +15,6 @@ class WebSocketServer(Server):
     def __init__(self, *args, **kwargs):
         super(WebSocketServer, self).__init__(*args, **kwargs)
         WebSockets(WEBSOCKET_PATH).register(self)
-        print '* * * * ', self.channel
 
     def get_next_user_id(self):
         self.connection_id += 1

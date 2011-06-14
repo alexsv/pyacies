@@ -1,0 +1,16 @@
+ Overview
+----------
+ PyAcies is framework to build MMORPG. It's written using event-driven approach, to avoid c10k problem. 
+ It uses circuits framework as backend, and will use html5 + websockets to communication with it.
+
+ Usage
+----------
+ You should have circuits framework installed
+ pip install circuits
+
+ For now it's run by next command:
+ python pyacies/server.py
+
+ which runs server on 8000 port, and accessible by ws://127.0.0.1:8000/ws
+
+
