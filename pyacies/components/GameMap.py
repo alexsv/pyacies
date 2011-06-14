@@ -17,6 +17,7 @@ class GameMap(Component):
         
         # map initialization
         self.map = Map(100, 50)
+        self.map.actors = self.actors
         for i in xrange(2):
             actor = RandomMovingActor('actor'+str(i), 0, 0)
             self.actors[actor.get_id()] = actor
@@ -46,5 +47,6 @@ class GameMap(Component):
     def redraw_actor(self, actor=None):
         if hasattr(actor, 'sock'):
             print 'REDRAW_ACTOR', actor.get_id()
-            self.fire(Event(sock=sock, actor=actor, map=self.map), 'redraw_actor', target='interactions')
+            #should be only for actors with socket
+            self.fire(Event(actor=actor, map=self.map), 'redraw_actor', target='interactions')
 
