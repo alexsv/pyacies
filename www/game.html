@@ -1,0 +1,121 @@
+<html>
+<head>
+<style>
+body, div, td, p {
+    font-family: tahoma;
+    font-size: 10pt;
+}
+h1 {
+    font-weight: normal;
+    font-size: 160%;
+    color: #777;
+}
+</style>
+    <script language="Javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script language="Javascript">
+function GameClient(url) {
+  var messages_count = 0;
+  var ws = new WebSocket(url);
+  var actors = {};
+  var map    = null;
+  var that   = this;
+
+  ws.onopen = function (e) {
+    $('#connection_board').hide();
+    $('#disconnection_board').show();
+    console.log('opened');
+    ws.send('{"cmd":"OK"}')
+  };
+  ws.onerror = function (e) {
+    console.log('error' + e);
+  };
+  ws.onmessage = function (e) {
+    messages_count++;
+    $('#messages').html('<b>' + messages_count + '</b> ' + e.data);
+    json = $.parseJSON(e.data);
+    if (json.cmd) {
+      if (json.cmd == 'REDRAW') {
+        if (json.map) {
+          self.map = {
+            width:  json.map.width,
+            height: json.map.height
+          }
+          that.update_map();
+        }
+        if (json.actors) {
+          for (var i=0; i<json.actors.length; i++) {
+              var actor = json.actors[i];
+              actors[actor.id] = actor;
+          }
+          that.update_actors();
+        }
+      }
+    }
+  }
+  ws.onclose = function (e) {
+    $('#connection_board').show();
+    $('#disconnection_board').hide();
+    console.log('closed');
+  }
+  this.close = function() {
+    ws.close();
+  }
+  this.update_map = function() {
+    $('#map').css('width', self.map.width * 10);
+    $('#map').css('height', self.map.height * 10);
+  }
+  this.update_actors = function() {
+    for (var actor_id in actors) {
+      var actor = actors[actor_id];
+      var elem_id = 'actor_' + actor_id;
+      if (!$('#'+elem_id).length) {
+        var elem = $('<div>').attr('id', elem_id).css('position', 'absolute');
+        if (actor_id.substring(0, 4) == 'user') {
+            elem.html('@')
+        } else {
+            elem.html('X');
+        }
+        $('#map').append(elem);
+      }
+      $('#'+elem_id).css('left', actor.x * 10).css('top', actor.y * 10);
+    }
+  }
+  this.move_user = function(x, y) {
+    var data = '{"cmd":"MOVEUSER","x":'+x+',"y":'+y+'}';
+    ws.send(data);
+    console.log('move to ('+x+','+y+')');
+  }
+}
+$(document).ready(function() {
+  var ws_url = 'ws://'+window.location.hostname+':'+window.location.port+'/ws';
+  $('#url').val(ws_url);
+  var client = null;
+  $('#connect_btn').click(function() {
+    if (client) {
+      client.close();
+    }
+    client = new GameClient($('#url').val());
+  });
+  $('#disconnect_btn').click(function() {
+    client.close();
+  });
+  $('#map').mousedown(function(e) {
+    client.move_user(e.offsetX/10, e.offsetY/10);
+  });
+});
+</script>
+</head>
+<body>
+    <h1>PyAcies Game Field</h1>
+    <div id="connection_board">
+        <input type="text" id="url" value="" size="30">
+        <input type="button" value="Connect" id="connect_btn">
+    </div>
+    <div id="disconnection_board" style="display:none">
+        <input type="button" value="Disconnect" id="disconnect_btn">
+    </div>
+    <div id="messages"></div>
+    <div id="map" style="border:1px solid #797;width:0px;height:0px;position:relative"></div>
+
+</body>
+</html>
