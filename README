@@ -4,7 +4,7 @@
  It uses circuits framework as a backend, and will use html5 + websockets for communication.
 
  Usage
-----------
+-------
  You should have circuits framework installed
  pip install circuits
 
@@ -13,4 +13,6 @@
 
  which runs server on 8000 port, and accessible by ws://127.0.0.1:8000/ws
 
+ Libraries used
+----------------
 

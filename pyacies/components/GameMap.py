@@ -2,7 +2,7 @@ from circuits import Component, Timer, Event
 from core.maps import Map
 from core.actors import RandomMovingActor
 
-TIME_STEP = 1
+TIME_STEP = 0.05
 
 class GameMap(Component):
 
@@ -18,7 +18,7 @@ class GameMap(Component):
         # map initialization
         self.map = Map(100, 50)
         self.map.actors = self.actors
-        for i in xrange(2):
+        for i in xrange(20):
             actor = RandomMovingActor('actor'+str(i), 0, 0)
             self.actors[actor.get_id()] = actor
 
@@ -49,4 +49,7 @@ class GameMap(Component):
             print 'REDRAW_ACTOR', actor.get_id()
             #should be only for actors with socket
             self.fire(Event(actor=actor, map=self.map), 'redraw_actor', target='interactions')
+
+    def move_user(self, user=None, x=0, y=0):
+        user.moveto(x, y)
 

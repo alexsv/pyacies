@@ -7,4 +7,4 @@ class Map(object):
         self.height = height
 
     def can_move(self, x, y):
-        return x > 0 and y > 0 and x < self.width and y < self.width
+        return x > 0 and y > 0 and x < self.width - 1 and y < self.height - 1
